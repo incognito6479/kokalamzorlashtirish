@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load pitomnik_tags %}
+{% block additional_css %}
+    <link rel="stylesheet"
+          href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+{% endblock %}
+{% block content %}
+
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between"
+                     style="font-size: 20px">
+                    {% if request.resolver_match.view_name == "pitomnik:newirrigation:list_region_admin" %}
+                        <a class="text-decoration-none"
+                           href="{% url "pitomnik:newirrigation:list_admin" %}"><i
+                                class="fas fa-arrow-left text-white"></i></a>
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+                    <span class="text-white">{{ object_list.first.organization.name }}</span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="tableContent">
+                {% include "add.html" with add_url="pitomnik:newirrigation:add" permission=perms.pitomnik.add_newirrigation %}
+                <div>
+                    <div class="table-responsive table-scrollbar">
+                        <table class="table plant">
+                            <thead>
+                            <tr>
+                                <th rowspan="3">#</th>
+                                <th rowspan="3">Автомобил йулининг номи</th>
+                                <th rowspan="2" colspan="2">Манзили</th>
+                                <th colspan="3">Янги яратилган суғориш тизимлари
+                                </th>
+                                <th rowspan="3" width="15%">Aмаллар</th>
+                            </tr>
+                            <tr>
+                                <th>Артезиан қудуқ</th>
+                                <th>Томчилатиб</th>
+                                <th>Ёмғирлатиб</th>
+                            </tr>
+                            <tr>
+                                <th>км</th>
+                                <th>км</th>
+                                <th>дона</th>
+                                <th>км</th>
+                                <th>км</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <form>
+                                    <td></td>
+                                    <td colspan="3">
+                                        {{ filter.form.road_district__road | as_crispy_field }}
+                                    </td>
+                                    <td colspan="3"></td>
+                                    <td class="d-flex justify-content-end">
+                                        <button type="submit"
+                                                class="btn btn-secondary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </td>
+                                </form>
+                            </tr>
+                            {% for new_irrigation in object_list %}
+                                <tr>
+                                    <td>
+                                        {{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                    <td>{{ new_irrigation.road_district.road.code }} {{ new_irrigation.road_district.road.title }}</td>
+                                    <td>{{ new_irrigation.road_from | get_decimal }}</td>
+                                    <td>{{ new_irrigation.road_to | get_decimal }}</td>
+                                    <td>{{ new_irrigation.artesian_well }}</td>
+                                    <td>{{ new_irrigation.drop | get_decimal }}</td>
+                                    <td>{{ new_irrigation.rain | get_decimal }}</td>
+                                    <td>
+                                        {% include "view_image.html" with permission=perms.pitomnik.view_newirrigationimage image_url="pitomnik:newirrigation:images" object=new_irrigation %}
+                                        {% include "change.html" with permission=perms.pitomnik.change_newirrigation change_url="pitomnik:newirrigation:change_for_admin" id=new_irrigation.id %}
+                                        {% include "delete.html" with permission=perms.pitomnik.delete_newirrigation delete_url="pitomnik:newirrigation:delete_for_admin" id=new_irrigation.id %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block additional_js %}
+    <script src="{% static "vendor/select2-4.1.0-beta.1/dist/js/select2.js" %}"></script>
+    <script src="{% static "local/js/road_select2.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#id_road_district__road").select2();
+        });
+    </script>
+{% endblock %}

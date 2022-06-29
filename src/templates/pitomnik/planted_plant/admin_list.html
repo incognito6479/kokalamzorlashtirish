@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block additional_css %}
+    <link rel="stylesheet"
+          href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+    <link rel="stylesheet"
+          href="{% static "vendor/css/datepiker-css/gijgo.min.css" %}">
+{% endblock %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="tableCont">
+            <div class="tableHeader">
+                {% if request.resolver_match.view_name == "pitomnik:plantedplants:admin_list" %}
+                    <a class="text-decoration-none"
+                       href="{% url "account:organizations" %}"><i
+                            class="fas fa-arrow-left text-white"></i></a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+
+            </div>
+        <div class="d-flex justify-content-start m-0 p-2">
+                    <a href="{% url "pitomnik:plantedplants:download" %}"
+                       class="btn btn-success">Юклаб олиш</a>
+                </div>
+            <div class="tableContent">
+
+                <div>
+                    <div id="table" class="table-responsive">
+                        <table class="table plant">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th width="20%">Туманлар</th>
+                                <th>Йўл номи</th>
+                                <th>Экилган йўл</th>
+                                <th>Манба</th>
+                                <th width="14%">Ўсимлик</th>
+                                <th>Экилди (дона)</th>
+                                <th>Йўл тарафи</th>
+                                <th>Экилган санаси</th>
+                                <th width="15%">Aмаллар</th>
+                            </tr>
+
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <form>
+                                    <td></td>
+                                    <td>
+                                        {{ filter.form.road_district__district | as_crispy_field }}
+                                    </td>
+                                    <td>
+                                        {{ filter.form.road_district__road | as_crispy_field }}
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                    <td>
+                                        {{ filter.form.plant | as_crispy_field }}
+                                    </td>
+                                    <td colspan="3"></td>
+                                    <td class="d-flex justify-content-end">
+                                        <button type="submit"
+                                                class="btn btn-secondary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </td>
+                                </form>
+                            </tr>
+
+                            {% for object in object_list %}
+                                <tr>
+                                    <td>
+                                        {{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                    <td>{{ object.road_district.district.name }}</td>
+                                    <td>{{ object.road_district.road.code }} {{ object.road_district.road.title }}</td>
+                                    <td>{{ object.road_from | get_decimal }}-{{ object.road_to | get_decimal }}</td>
+                                    {% if object.plant_source == "PITOMNIK" %}
+                                        <td>{{ object.pitomnik.name }}</td>
+                                    {% else %}
+                                        <td>{{ object.plant_source|plant_source_label }}</td>
+                                    {% endif %}
+                                    <td>{{ object.plant.name }}</td>
+                                    <td class="get_quantity">{{ object.quantity }}</td>
+                                    <td>{{ object.planting_side| planting_side_label }}</td>
+                                 <td>{{ object.planted_date }}</td>
+                                    <td>
+                                          {% include "view_image.html" with permission=perms.pitomnik.view_plantedplantimage   image_url="pitomnik:plantedplants:images"   object=object %}
+                                          {% include "delete.html" with permission=perms.pitomnik.delete_plantedplants   delete_url="pitomnik:plantedplants:delete"   id=object.id   message="Белгиланган экилган  ўсимлик ўчирилади!" %}
+
+                                    </td>
+
+
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="11">Ўсимлик экилмаган
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary">Жами</td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary show_quantity_total"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                        </tr>
+                            </tbody>
+                        </table>
+
+                        {% include "pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block additional_js %}
+    <script src="{% static "vendor/select2-4.1.0-beta.1/dist/js/select2.js" %}"></script>
+    <script src="{% static "vendor/js/datepiker-js/gijgo.min.js" %}"></script>
+    <script src="{% static "vendor/js/maskedinput/maskedInput.js" %}"></script>
+    <script>
+        $('#id_road_district__district').select2();
+        $('#id_road_district__road').select2();
+        $('#id_plant').select2();
+
+        let total = 0;
+        {% for i in object_list %}
+            total += {{ i.quantity }};
+        {% endfor %}
+        $('.show_quantity_total').html(total);
+    </script>
+{% endblock %}
+
+

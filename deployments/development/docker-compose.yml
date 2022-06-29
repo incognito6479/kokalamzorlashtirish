@@ -1,0 +1,13 @@
+version: "3"
+services:
+  postgres-service:
+    image: postgres:12.4
+    restart: always
+    container_name: "${PROJECT_NAME}-postgres"
+    environment:
+        - POSTGRES_DB=${PROJECT_POSTGRES_DB}
+        - POSTGRES_USER=${PROJECT_POSTGRES_USER}
+        - POSTGRES_PASSWORD=${PROJECT_POSTGRES_PASSWORD}
+        - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432

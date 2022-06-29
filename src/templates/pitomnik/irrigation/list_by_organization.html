@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between" style="font-size: 20px">
+                    {% if request.resolver_match.view_name == "pitomnik:irrigation:list_region_admin" %}
+                        <a class="text-decoration-none" href="{% url "pitomnik:irrigation:list_admin" %}"><i class="fas fa-arrow-left text-white"></i></a>
+                    {% else %}
+                            <span></span>
+                    {% endif %}
+                    <span class="text-white">{{ object_list.first.organization.name }}</span>
+                    <span></span>
+                </div>
+            </div>
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Автомобил йулининг номи</th>
+                            <th>Манзили</th>
+                            <th>Дарахтлар (дона)</th>
+                            <th>Узунлиги (км)</th>
+                            <th width="15%">Суғориш тури</th>
+                            <th width="15%">Aмаллар</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for irrigation in object_list %}
+                            <tr>
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ irrigation.road_district.road.code }} {{ irrigation.road_district.road.title }}</td>
+                                <td>{{ irrigation.road_slice | array_to_range_str }}</td>
+                                <td>{{ irrigation.tree_quantity }}</td>
+                                <td>{{ irrigation.length | get_decimal }}</td>
+                                <td>{{ irrigation.irrigation_type|irrigation_type_label }}</td>
+                                <td>
+                                    {% include "view_image.html" with permission=perms.pitomnik.view_irrigationimage   image_url="pitomnik:irrigation:images"   object=irrigation %}
+                                    {% include "change.html" with permission=perms.pitomnik.change_irrigation   change_url="pitomnik:irrigation:change_for_admin"   id=irrigation.id %}
+                                    {% include "delete.html" with permission=perms.pitomnik.delete_irrigation   delete_url="pitomnik:irrigation:delete_for_admin"   id=irrigation.id %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

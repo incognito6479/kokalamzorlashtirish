@@ -1,0 +1,7 @@
+export DJANGO_SETTINGS_MODULE="config.settings.development"
+export PROJECT_NAME="kokalamzorlashtirish"
+export PROJECT_POSTGRES_DB="daraxt"
+export PROJECT_POSTGRES_USER="postgres"
+export PROJECT_POSTGRES_PASSWORD="msi_gp_63"
+
+

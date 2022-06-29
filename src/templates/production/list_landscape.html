@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load production_tags %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-center" style="font-size: 20px">
+                <span class="text-white ">ЛАНДШАФТ-ДИЗАЙН ишлари бўйича бажарилган ишлар маълумоти</span>
+                <span></span>
+            </div>
+
+        </div>
+        <div class="tableContent">
+            <div class="table-add d-flex justify-content-between mb-3">
+                <p></p>
+                <a href="{% url "production:landscape:create" %}"
+                   class="btn btn-warning">
+                    <i class="fas fa-plus text-light"></i>
+                </a>
+                <!-- Modal -->
+            </div>
+            <div>
+                <div class="table-responsive table-scrollbar">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Автомобиль йўлининг номи</th>
+                            <th>Манзили</th>
+                            <th>Сони</th>
+                            <th>Суммаси</th>
+                            <th>ЛСҲ</th>
+                            <th>Ой&Йил</th>
+                            <th colspan=2>Ўзгартириш & Ўчириш</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tableBody">
+                        <tr>
+                        <tr>
+                            <form>
+                                <td></td>
+                                <td>
+                                    {{ filter.form.monthly_prod_plan__yearly_prod_plan__road |as_crispy_field }}
+                                </td>
+                                <td>
+                                    {{ filter.form.monthly_prod_plan__yearly_prod_plan__road__code |as_crispy_field }}
+                                </td>
+                                <td class="d-inline-block">
+                                    <button type="submit"
+                                            class="btn btn-secondary ">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                        </tr>
+                        {% for landscape in object_list %}
+                            <tr>
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ landscape.monthly_prod_plan.yearly_prod_plan.road }}</td>
+                                <td>{{ landscape.road_address |array_to_range_str }}</td>
+                                <td>{{ landscape.quantity }}</td>
+                                <td>{{ landscape.money_amount | intcomma }}</td>
+                                <td>{{ landscape.LSH | intcomma }}</td>
+                                <td>
+                                    {{ landscape.monthly_prod_plan.month.month|to_string }} {{ landscape.monthly_prod_plan.yearly_prod_plan.year.year }}
+                                </td>
+                                <td>
+                                    <a href="{% url "production:landscape:change" landscape.id %}"
+                                       class="btn btn-success">
+                                        <i class="fas fa-pencil-alt text-white"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-danger " data-toggle="modal"
+                                            data-target="#model-id{{ landscape.id }}">
+                                        <i class="far fa-trash-alt text-white"></i>
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="model-id{{ landscape.id }}" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered d-flex justify-content-center"
+                                             role="document">
+                                            <div class="modal-content border-0" style="width: 400px">
+                                                <div class="modal-body">
+                                                    <h1>Ўчирилади</h1>
+                                                    <p>
+                                                        Белгиланган Ландшафт ўчирилади!
+                                                    </p>
+                                                    <div class="w-100 d-flex justify-content-between align-items-center">
+                                                        <form action="{% url "production:landscape:delete" landscape.id %}"
+                                                              method="post" style="display: contents">
+                                                            {% csrf_token %}
+                                                            <button type="button" style="flex: 0.45"
+                                                                    class="btn btn-outline-secondary"
+                                                                    data-dismiss="modal">Ёқ
+                                                            </button>
+                                                            <button type="submit" style="flex: 0.45"
+                                                                    class="rounded-lg btn btn-danger">Ҳа
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+

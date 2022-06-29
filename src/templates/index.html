@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+{% load static %}
+{% block additional_css %}
+    <style>
+        .modal-backdrop {
+            opacity: 0.8 !important;
+        }
+    </style>
+{% endblock %}
+{% block map %}
+    <div style="height: 102%; padding: 0; position: relative" class="content"
+         id="map-container">
+        <div id="box-container">
+
+            <div class="left-hand-side">
+                <div id="info-box">
+                </div>
+            </div>
+            <div class="right-hand-side">
+                <div id="info-data"></div>
+            </div>
+        </div>
+        <div style="height: 100%" id="main-map"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="regionModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-0" style="width: 400px">
+                    <div class="modal-body">
+                        <h1>Танланг</h1>
+                        <p>
+                            Ўзингизга керакли вилоятни танланг
+                        </p>
+                        <div class="w-100 d-flex justify-content-between align-items-center">
+                            <button
+                                    type="button"
+                                    style="flex: 0.45; font-size: 15px"
+                                    class="btn btn-outline-secondary"
+                                    id="tashkentcity"
+                                    data-dismiss="modal">
+                                Тошкент шахри
+                            </button>
+                            <button
+                                    type="button"
+                                    style="flex: 0.45; font-size: 15px"
+                                    class="btn btn-outline-secondary"
+                                    id="tashkentRegion"
+                                    data-dismiss="modal">
+                                Тошкент вилояти
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block additional_js %}
+    <!-- Google map (Can't be downloaded)-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9TjZ738gEUOCYu0YJSjvSu18eVFJAHkQ"></script>
+
+    <script>
+
+        class DataService {
+            apiBase = "/regiondata/api/"
+
+            getRegionDistricts = async (url) => {
+                const response = await fetch(`${this.apiBase}${url}`)
+                if (!response.ok) {
+                    console.log(`Could not Fetch : ${url}, received ${response.status}`)
+                }
+                const body = await response.json()
+                return body
+            }
+        }
+
+        function generateRandomColor() {
+            let letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function regionFinder(id) {
+            let name = '';
+            let code = null;
+            switch (id) {
+                case 1:
+                    name += "Сурхондарё";
+                    code += 6890
+                    break;
+                case 2:
+                    name = "Кашкадарё";
+                    code = 6348
+                    break;
+                case 3:
+                    name = "Самарканд";
+                    code = 3527
+                    break;
+                case 4:
+                    name = "Фаргона";
+                    code = 9774
+                    break;
+                case 5:
+                    name = "Сирдарё";
+                    code = 1547
+                    break;
+                case 6:
+                    name = "Андижон";
+                    code = 6027
+                    break;
+                case 7:
+                    name = "Жиззах";
+                    code = 2656
+                    break;
+                case 8:
+                    name = "Хоразм";
+                    code = 4357
+                    break;
+                case 9:
+                    name = "Бухоро";
+                    code = 6379
+                    break;
+                case 10:
+                    name = "Наманган ";
+                    code = 5354
+                    break;
+                case 12:
+                    name = "Навоий ";
+                    code = 4985
+                    break;
+                case 13:
+                    name = "Коракалпогистон";
+                    code = 3396
+                    break;
+                default:
+                    name = "";
+                    break
+            }
+            return {code, name}
+        }
+
+        function infoBox(name, districts) {
+            let allNames = "";
+
+            for (let i = 0; i < districts.length; i++) {
+                allNames += `<li onclick="infoData('${districts[i].pk}/districtplants/', 'district')">${districts[i].fields.name}</li>`
+            }
+
+            const districtList = `
+            <div class="region-info-box">
+                <h5>${name}</h5>
+                <p>туманлар</p>
+                <div class="info-column mt-2">
+                    <ul id="district-names">
+                        ${allNames}
+                    </ul>
+                </div>
+            </div>
+       `; // regions list
+            document.getElementById('info-box').style.display = "block";
+            document.getElementById("info-box").innerHTML = districtList
+        }
+
+        function infoData(url, define) {
+            let dataService = new DataService()
+            dataService.getRegionDistricts(url)
+                .then(data => {
+                    let obj
+                    define === "uzb" ? obj = data : obj = data[0]
+                    const districtData = `
+                    <div>
+                        <h1>${define === "district" ? obj.district__name : obj.district__region__name || "Ўзбекистон"}</h1>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2">йўл тури</th>
+                                        <th rowspan="2">йўл узунлиги</th>
+                                        <th colspan="4">дарахтлар сони</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">япроқ баргли</th>
+                                        <th scope="row">игна баргли</th>
+                                        <th scope="row">бута</th>
+                                        <th>Жами</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-left">халқаро</td>
+                                        <td>${Math.round(obj.international_len_sum/1000)} KM</td>
+                                        <td>${obj.international_leafy_shaped_sum}</td>
+                                        <td>${obj.international_coniferous_shaped_sum}</td>
+                                        <td>${obj.international_bush_sum}</td>
+                                        <td>${obj.international_sum}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">давлат</td>
+                                        <td>${Math.round(obj.government_len_sum/1000)} KM</td>
+                                        <td>${obj.government_leafy_shaped_sum}</td>
+                                        <td>${obj.government_coniferous_shaped_sum}</td>
+                                        <td>${obj.government_bush_sum}</td>
+                                        <td>${obj.government_sum}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">маҳаллий</td>
+                                        <td>${Math.round(obj.local_len_sum/1000)} KM</td>
+                                        <td>${obj.local_leafy_shaped_sum}</td>
+                                        <td>${obj.local_coniferous_shaped_sum}</td>
+                                        <td>${obj.local_bush_sum}</td>
+                                        <td>${obj.local_sum}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">Жами</td>
+                                        <td>${Math.round(obj.international_len_sum/1000)+Math.round(obj.government_len_sum/1000)+Math.round(obj.local_len_sum/1000)} KM</td>
+                                        <td>${obj.all_leafy_shaped_sum}</td>
+                                        <td>${obj.all_coniferous_shaped_sum}</td>
+                                        <td>${obj.all_bush_sum}</td>
+                                        <td>${obj.all_sum}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`
+
+                    document.getElementById("info-data").style.display = "block"
+                    document.getElementById("info-data").innerHTML = districtData;
+                })
+        }
+
+        function initMapAdmin() {
+
+            const map = new google.maps.Map(document.getElementById("main-map"), {
+                zoom: 6.2,
+                center: {lat: 41.251383, lng: 64.129290},
+                disableDefaultUI: false,
+                gestureHandling: 'none',
+                zoomControl: true
+            });
+
+            map.data.loadGeoJson('/regiondata/api/cordinates/');
+            map.data.setStyle(function () {
+                return ({
+                    fillColor: generateRandomColor(),
+                    strokeWeight: 1,
+                    zIndex: 1
+                });
+
+            }); // setting style and painting map
+
+            map.data.addListener("mouseover", (event) => {
+                map.data.overrideStyle(event.feature, {
+                    strokeWeight: 3,
+                    fillColor: 'rgba(0,0,0,.7)'
+                });
+            }); // changing style on hover
+            map.data.addListener("mouseout", (event) => {
+                map.data.revertStyle();
+            }); // return initial style
+
+            map.data.addListener("click", (event) => {
+                let popup = async (event) => {
+                    let id = parseInt(event.feature.j.replace(/[A-Za-z$-.]/g, ""));
+                    let regionId;
+                    let {code, name} = regionFinder(id)
+                    let dataService = new DataService()
+                    if (id === 11) {
+                        $('#regionModal').modal('show')
+                        document.getElementById("tashkentcity").addEventListener("click", async function () {
+                            code = 7601
+                            name = "Тошкент шаҳри"
+                            await dataService.getRegionDistricts('regions/')
+                                .then(data => {
+                                    for (let i = 0; i < data.length; i++) {
+                                        if (data[i].fields.code === code) {
+                                            regionId = data[i].pk
+                                        }
+                                    }
+                                })
+                            dataService.getRegionDistricts(`${regionId}/districts/`)
+                                .then(data => {
+                                    infoBox(name, data)
+                                })
+                            infoData(`${regionId}/regionplants`, "region")
+                        })
+                        document.getElementById("tashkentRegion").addEventListener("click", async function () {
+                            code = 3293;
+                            name = "Тошкент вилояти"
+                            await dataService.getRegionDistricts('regions/')
+                                .then(data => {
+                                    for (let i = 0; i < data.length; i++) {
+                                        if (data[i].fields.code === code) {
+                                            regionId = data[i].pk
+                                        }
+                                    }
+                                })
+                            dataService.getRegionDistricts(`${regionId}/districts/`)
+                                .then(data => {
+                                    infoBox(name, data)
+                                })
+                            infoData(`${regionId}/regionplants`, "region")
+                        })
+                    } else {
+                        await dataService.getRegionDistricts('regions/')
+                            .then(data => {
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i].fields.code === code) {
+                                        regionId = data[i].pk
+                                    }
+                                }
+                            })
+                        dataService.getRegionDistricts(`${regionId}/districts/`)
+                            .then(data => {
+                                infoBox(name, data)
+                            })
+                        infoData(`${regionId}/regionplants`, "region")
+                    }
+
+                };
+                return popup(event)
+            });
+
+            infoData('republicplants/', "uzb")
+
+            document.getElementById('info-box').style.display = "none";
+            document.getElementById('info-data').style.display = "none";
+
+        }
+
+        initMapAdmin()
+
+    </script>
+
+{% endblock %}
+

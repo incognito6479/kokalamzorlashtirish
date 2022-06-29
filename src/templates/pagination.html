@@ -1,0 +1,45 @@
+{% load pitomnik_tags %}
+{% if page_obj.has_other_pages %}
+
+    <div class="paginationCont">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% param_replace page=page_obj.previous_page_number %}">«</a>
+                </li>
+            {% endif %}
+            {% if page_obj.number > 4 %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% param_replace page=1 %}">1</a>
+                </li>
+                 <li class="page-item" disabled="disabled">
+                    <span class="page-link" href="#">...</span>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                <li class="page-item">
+                    {% if page_obj.number == num %}
+                        <a class="page-link pagination-bg" href="?{% param_replace page=num %}">{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-4' and num < page_obj.number|add:'4' %}
+                        <a class="page-link" href="?{% param_replace page=num %}">{{ num }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            {% if page_obj.number  <  page_obj.paginator.num_pages|add:'-3'%}
+                <li class="page-item" disabled="disabled">
+                    <span class="page-link" href="#">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?{% param_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+                </li>
+
+            {% endif %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% param_replace page=page_obj.next_page_number %}">»</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endif %}

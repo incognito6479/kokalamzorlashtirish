@@ -1,0 +1,21 @@
+*.pyc
+__pycache__/*
+db.sqlite3
+venv/
+.venv
+media/
+.vscode\
+.idea/
+
+# Vim
+*.sw[a-z]
+
+# Logs
+*.log.*
+*.log
+
+# Volumes
+/volumes/*
+
+# Environment
+.env

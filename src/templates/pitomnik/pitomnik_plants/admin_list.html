@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block additional_css %}
+    <link rel="stylesheet"
+          href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+{% endblock %}
+{% block content %}
+
+    <div class="tableCont">
+        <div class="tableHeader justify-content-center">
+            <h3 class="m-0">Питомник Ўсимликлари</h3>
+        </div>
+        <div class="tableContent">
+            <div class="table-responsive table-scrollbar">
+                <div id="table" class="table-responsive">
+                    <div class="d-flex justify-content-start m-0 p-2">
+{#                        <a href="{% url 'pitomnik:pitomnikplants:download' %}"#}
+                        <a id="download" href="{% url "pitomnik:pitomnikplants:download" %}?pitomnik__organization={{ pitomnik__organization }}&pitomnik={{ pitomnik }}&plant={{ plant }}&plant__type={{ plant__type }}&status={{ status }}"
+                           class="btn btn-success ajax_download">Юклаб олиш</a>
+                    </div>
+                    <table class="table plant">
+                        <thead>
+                        <td>№</td>
+                        <td width="14%">Ташкилот номи</td>
+                        <td width="19%">Питомник номи</td>
+                        <td width="12%">Ўсимлик номи</td>
+                        <td width="12%">Ўсимлик тури</td>
+                        <td width="5%">Сони</td>
+                        <td width="5%">Қуриган</td>
+                        <td width="5%">Экилган майдони</td>
+                        <td width="7%">Экилган санаси</td>
+                        <td width="7%">Тахминий тайёр бўлиш санаси</td>
+                        <td width="15%">Тайёр/Тайёр эмас</td>
+                        <td width="5%"></td>
+                        <td width="4%"></td>
+                        <td></td>
+
+
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <form>
+                                <td></td>
+                                <td onchange="load_doc(this)" id="pitomnik__organization">
+                                    {{ filter.form.pitomnik__organization | as_crispy_field }}
+                                </td>
+                                <td id="pitomnik">
+                                    {{ filter.form.pitomnik | as_crispy_field }}
+                                </td>
+                                <td id="plant">
+                                    {{ filter.form.plant | as_crispy_field }}
+                                </td>
+                                <td id="plant_type">
+                                    {{ filter.form.plant__type | as_crispy_field }}
+                                </td>
+                                <td colspan="3"></td>
+
+                                <td>
+                                    {{ filter.form.planted_date }}
+                                    <input id="planted_date"
+                                           onchange="planted_date_datepiker(this)">
+                                </td>
+                                <td>
+                                    {{ filter.form.readiness_date }}
+                                    <input id="readiness_date"
+                                           onchange="readiness_date_datepiker(this)">
+                                </td>
+                                <td width="100%" id="status">
+                                    {{ filter.form.status | as_crispy_field }}
+                                </td>
+                                <td class="">
+                                    <button type="submit"
+                                            class="btn btn-secondary refreshing_button">
+                                        <i class="fas fa-search refreshing_button"></i>
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                        {% for pitomnik_plant in object_list %}
+                            <tr>
+                                <td>
+                                    {{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ pitomnik_plant.pitomnik.organization.name }}</td>
+                                <td>{{ pitomnik_plant.pitomnik.name }}</td>
+                                <td>{{ pitomnik_plant.plant.name }}</td>
+                                <td>{{ pitomnik_plant.plant.type|plant_type_label }}</td>
+                                <td>{{ pitomnik_plant.quantity }}</td>
+                                <td>{{ pitomnik_plant.dried }}</td>
+                                <td>{{ pitomnik_plant.plant_field | get_decimal }}</td>
+                                <td>{{ pitomnik_plant.planted_date }}</td>
+                                <td>{{ pitomnik_plant.readiness_date }}</td>
+                                <td>{{ pitomnik_plant.readiness_date |get_status_pitomnik_plant }}</td>
+                                <td>
+                                    {% include "view_image.html" with permission=perms.pitomnik.view_pitomnikplantimage image_url="pitomnik:pitomnikplants:images" object=pitomnik_plant %}
+                                </td>
+                                <td>
+                                    {% include "change.html" with permission=perms.pitomnik.change_pitomnikplants change_url="pitomnik:pitomnikplants:change" id=pitomnik_plant.id %}
+                                </td>
+                                <td>
+                                    {% include "delete.html" with permission=perms.pitomnik.delete_pitomnikplants delete_url="pitomnik:pitomnikplants:delete" id=pitomnik_plant.id %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="12"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">Питомникларга ўсимликлар
+                                    қошилмаган
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary">Жами</td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary show_total_quantity"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                            <td class="alert alert-primary"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block additional_js %}
+    <script>
+
+    </script>
+    <script src="{% static "vendor/select2-4.1.0-beta.1/dist/js/select2.js" %}"></script>
+    <script src="{% static "vendor/js/datepiker-js/gijgo.min.js" %}"></script>
+    <script src="{% static "local/js/pitomnik_plant_date_picker.js" %}"></script>
+    <script>
+    $("#id_pitomnik__organization").select2();
+
+    function load_doc(t) {
+        $('.refreshing_button').click();
+        console.log('refreshing page for organisation name');
+    }
+
+    let url = new URL(window.location.href);
+    if (url.searchParams.get('pitomnik__organization') || url.searchParams.get('pitomnik') || url.searchParams.get('plant') || url.searchParams.get('plant__type') || url.searchParams.get('planted_date') || url.searchParams.get('readiness_date') || url.searchParams.get('status')) {
+        let total = 0;
+        {% for i in object_list %}
+            total += {{ i.quantity }};
+        {% endfor %}
+        $('.show_total_quantity').html(total);
+    } else {
+        let t = {{ total_plant }};
+        $('.show_total_quantity').html(t);
+    }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+
+    <link rel="stylesheet" href="{% static "vendor/css/bootstrap/bootstrap.min.css" %}">
+    <!-- main -->
+    <link rel="stylesheet" href="{% static "local/css/main.css" %}">
+    <!-- font awesome locale -->
+    <link rel="stylesheet" href="{% static "vendor/fonts/css/all.css" %}">
+
+    <link href="{% static "vendor/css/datepiker-css/gijgo.css" %}" rel="stylesheet" type="text/css"/>
+    {% block additional_css %}
+
+    {% endblock %}
+    <title>
+        {% block title %}
+            УП Ўзйўлкўкаламзорлаштириш
+        {% endblock %}
+    </title>
+    <link rel="icon" href="{% static "img/logo-uzkuk.png" %}">
+</head>
+<body>
+
+
+<header class="header">
+    <div class="header__inner clearfix">
+        <div id="searchbar">
+            <div class="logo">
+                 <a href="{% url "pitomnik:map" %}"><img src="{% static "img/logo-uzkuk.png" %}" alt="logo"></a>
+            </div>
+            <div class="header-icon js-hamburger">
+                <div class="hamburger-toggle is-opened"><span class="bar-top"></span><span class="bar-mid"></span><span class="bar-bot"></span></div>
+            </div>
+             <span class="client-name">{{ request.user.get_full_name }}</span>
+        </div>
+        <div class="header-icons">
+            <span class="user-location">{{ request.user.organization.region.name }}</span>
+             <a href="{% url "account:logout" %}"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </div>
+</header>
+
+<div class="wrapper">
+    {% include "navbar.html" %}
+    <div class="d-flex flex-column w-100">
+    {% if request.resolver_match.view_name == 'pitomnik:map' %}
+        {% block map %}
+        {% endblock %}
+    {% endif %}
+    {% if request.resolver_match.view_name != 'pitomnik:map' %}
+        <div class="content">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    {% endif %}
+    {% include "footer.html" %}
+    </div>
+</div>
+
+
+<!-- Jquery -->
+<script src="{% static "vendor/js/JQuery.js" %}"></script>
+<!-- bootstrap -->
+<script src="{% static "vendor/js/bootstrap/bootstrap.min.js" %}"></script>
+<!-- bootstrap date piker -->
+<script src="{% static "local/js/main.js" %}"></script>
+{% block additional_js %}
+
+{% endblock %}
+
+
+</body>
+</html>

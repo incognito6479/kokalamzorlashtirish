@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span><p><i class="fas fa-bars"></i> Ўсимлик Турлари</p></span>
+            </div>
+
+            <div class="card-body pt-1">
+                <div class="card-title p-2 m-0 d-flex justify-content-end">
+                    <a href="{% url "pitomnik:planttype:add" %}"
+                       class="btn btn-warning"><i
+                            class="fas fa-plus text-white"></i></a>
+                </div>
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ўсимлик тури</th>
+                            <th>Ўсимликлар сони</th>
+                            <th colspan="2">Aмаллар</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            {% for planttype in object_list %}
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ planttype.name }}</td>
+                                <td>{{ planttype.plant_count }}</td>
+
+                                <td>
+                                    <a href="{% url "pitomnik:planttype:change" planttype.id %}"
+                                       class="btn btn-success">
+                                        <i class="fas fa-pencil-alt text-white"></i>
+                                    </a>
+                                    <!-- Button trigger modal -->
+                                    <button type="button"
+                                            class="btn btn-danger ml-4"
+                                            data-toggle="modal"
+                                            data-target="#model-id{{ planttype.id }}">
+                                        <i class="far fa-trash-alt text-white"></i>
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade"
+                                         id="model-id{{ planttype.id }}"
+                                         tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalCenterTitle"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered d-flex justify-content-center"
+                                             role="document">
+                                            <div class="modal-content border-0"
+                                                 style="width: 400px">
+                                                <div class="modal-body">
+                                                    <h1> {{ planttype.name }}
+                                                        Ўчирилади</h1>
+                                                    <p>
+                                                        Белгиланган осимликлар
+                                                        тури ўчирилади!
+                                                    </p>
+                                                    <div class="w-100 d-flex justify-content-between align-items-center">
+                                                        <form method="post"
+                                                              action="{% url "pitomnik:planttype:delete" planttype.id %}"
+                                                              method="post"
+                                                              style="display: contents">
+                                                            {% csrf_token %}
+                                                            <button type="button"
+                                                                    style="flex: 0.45"
+                                                                    class="btn btn-outline-secondary"
+                                                                    data-dismiss="modal">
+                                                                Ёқ
+                                                            </button>
+                                                            <button type="submit"
+                                                                    style="flex: 0.45"
+                                                                    class="rounded-lg btn btn-danger">
+                                                                Ҳа
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

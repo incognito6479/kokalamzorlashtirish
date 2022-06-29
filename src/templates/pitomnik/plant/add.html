@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <div class="d-flex justify-content-center align-items-center p-3">
+        <div class="form-container bg-white shadow p-5 rounded w-100 ">
+
+    <form id="click-only-once" method='post' action="">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="modal-footer mt-4">
+             <a href="{% url "pitomnik:plant:list" %}" class="btn btn-secondary text-white ">Орқага қайтиш</a>
+            {% if request.resolver_match.view_name == "pitomnik:plant:add" %}
+                <button id="form-button" type="submit" class="btn btn-success">Қўшиш</button>
+            {% elif request.resolver_match.view_name == "pitomnik:plant:change" %}
+                <button id="form-button" type="submit" class="btn btn-success">Ўзгартириш</button>
+            {% endif %}
+
+        </div>
+    </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+        let form = document.getElementById("click-only-once")
+        let button = document.getElementById("form-button")
+        form.addEventListener("submit", () => {
+            button.setAttribute("disabled", "")
+        })
+    </script>
+{% endblock %}

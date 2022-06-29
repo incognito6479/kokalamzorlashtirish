@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load pitomnik_tags %}
+{% load static %}
+{% block content %}
+    <div class="tableCont">
+        <div class="tableHeader">
+            <div class="m-2">
+                <i class="fa fa-align-justify mx-2"></i>
+                Техникалар ҳақида малумот
+            </div>
+        </div>
+        <div class="tableContent">
+        {% include "add.html" with add_url="vehicles:local:add" permission=perms.vehicles.add_vehicle %}
+            <div>
+                <div class="table-responsive table-scrollbar">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">№</th>
+                            <th rowspan="2">Техникалар номи</th>
+                            <th rowspan="2">Техника тури</th>
+                            <th rowspan="2">И/Ч <br> Йили (сана)</th>
+                            <th rowspan="2">Давлат раками</th>
+                            <th rowspan="2">Инвентар рақами</th>
+                            <th rowspan="2">Баланс киймати (млн.сум)</th>
+                            <th rowspan="2">Эскириш киймати (млн.сум)</th>
+                            <th class="text-center" colspan="2">Юрган масофаси
+                                <br> (пробег),<br> Маш/соати
+                            </th>
+                            <th rowspan="2">GPS системаси ўрнатилганлиги</th>
+                            <th rowspan="2">Техник ҳолати (соз/носоз)</th>
+                            <th rowspan="2">сақлаш ҳолати <br> (айвонда/очиқ
+                                ҳавода)
+                            </th>
+                            <th rowspan="2" width="20%">Aмаллар</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">Йил бошида (км/маш.час)</th>
+                            <th scope="col">Ҳисобот даврида (км/маш.час)</th>
+
+                        </tr>
+
+                        </thead>
+                        <tbody class="tableBody">
+                        <!--filters-->
+
+                        <tr>
+                            <form>
+                                <td colspan="2">
+                                    {{ filter.form.name | as_crispy_field }}
+                                </td>
+                                <td>
+                                    {{ filter.form.manufactured_date }}
+                                    <input id="manufactured_date"
+                                           onchange="manufactured_date_datepiker(this)">
+                                </td>
+                                <td>
+                                    {{ filter.form.registration_plate | as_crispy_field }}
+                                </td>
+                                <td colspan="4"></td>
+                                <td>
+                                    {{ filter.form.GPS_status | as_crispy_field }}
+                                </td>
+                                <td>
+                                    {{ filter.form.tech_state | as_crispy_field }}
+                                </td>
+                                <td>
+                                    {{ filter.form.storage_site | as_crispy_field }}
+                                </td>
+                                <td colspan="2"></td>
+                                <td class="d-inline-block">
+                                    <button type="submit"
+                                            class="btn btn-secondary ">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+
+                        <!-- end filters-->
+                        <!-- for loop -->
+                        {% for vehicle in vehicle_list %}
+                            <tr class="technique-list modal-button">
+                                <td>
+                                    {{ page_obj.start_index|add:forloop.counter0  }}</td>
+                                <td>{{ vehicle.name }}</td>
+                                <td>{{ vehicle.type }}</td>
+                                <td>{{ vehicle.manufactured_date }}</td>
+                            {% if vehicle.registration_plate == None %}
+                                <td>-----</td>
+                            {% else  %}
+                                <td>{{ vehicle.registration_plate }}</td>
+                            {% endif %}
+
+                                {% if vehicle.inventory %}
+                                    <td>{{ vehicle.inventory }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                                {% if vehicle.balance_value %}
+                                    <td>{{ vehicle.balance_value | get_decimal }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                                {% if vehicle.aging_value %}
+                                    <td>{{ vehicle.aging_value | get_decimal }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                                {% if vehicle.mileage_value_start_year %}
+                                    <td>{{ vehicle.mileage_value_start_year | get_decimal }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+
+                                {% if vehicle.mileage_value_report_time %}
+                                    <td>{{ vehicle.mileage_value_report_time | get_decimal }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                                <td>{{ vehicle.GPS_status }}</td>
+                                <td>{{ vehicle.tech_state }}</td>
+                                <td>{{ vehicle.storage_site }}</td>
+                                <td>
+                                    {% include "change.html" with permission=perms.vehicles.change_vehicle  change_url="vehicles:local:change"   id=vehicle.id %}
+                                    {% include "delete.html" with permission=perms.vehicles.delete_vehicle   delete_url="vehicles:local:delete"   id=vehicle.id  message="Белгиланган автомобил ўчирилади!" %}
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "vendor/js/datepiker-js/gijgo.min.js" %}"></script>
+    <script src="{% static "local/js/vehicle/manufactured_date_picker.js" %}"></script>
+    <script src="{% static "local/js/vehicle/inspection_date_picker.js" %}"></script>
+    <script src="{% static "local/js/vehicle/oil_change_date_picker.js" %}"></script>
+{% endblock %}
+

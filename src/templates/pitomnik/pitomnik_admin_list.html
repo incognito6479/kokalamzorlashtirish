@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+
+            <div class="card-header">
+                {% if request.resolver_match.view_name == "pitomnik:pitomnik:admin_list" %}
+                    <a class="text-decoration-none"
+                       href="{% url "account:organizations" %}"><i
+                            class="fas fa-arrow-left text-white"></i></a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                <div class="d-flex justify-content-center"
+                     style="font-size: 20px">
+
+                </div>
+
+            </div>
+            <div class="tableContent">
+
+                <div>
+                    <div class="table-responsive table-scrollbar">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Питомник номлари</th>
+                                <th>Контр</th>
+                                <th>Питомник майдони (га)</th>
+                                <th>Манзил</th>
+                                <th>Расмлар</th>
+                            </tr>
+                            </thead>
+                            <tbody class="tableBody">
+                            {% for pitomnik in pitomniks %}
+                                <tr class="pinomnik-list modal-button"
+                                    data-toggle="modal"
+                                    data-target="#updateList">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ pitomnik.name }}</td>
+                                    <td>{{ pitomnik.kontr }}</td>
+                                    <td>{{ pitomnik.area | get_decimal }}</td>
+                                    <td>{{ pitomnik.address }}</td>
+                                    <td>
+                                        {% include "view_image.html" with permission=perms.pitomnik.view_pitomnikimage   image_url="pitomnik:pitomnik:images"   object=pitomnik %}
+
+                                    </td>
+
+
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9">Питомниклар қошилмаган
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

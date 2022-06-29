@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+        .imageHeader {
+            height: 50px;
+            width: 100%;
+            background: #66BB6A;
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+        }
+
+        .imageHeader span, .imageHeader a {
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            margin: 0 20px;
+        }
+    </style>
+
+    <div class="d-flex justify-content-center align-items-center p-4">
+        <div class="form-container bg-white shadow rounded w-100 overflow-hidden">
+            <div class="imageHeader">
+              {% if perms.pitomnik.view_savingjob%}
+                    <a class="text-decoration-none"
+                       href="{% url "pitomnik:savingjob:list" %}"><i
+                            class="fas fa-arrow-left text-white"></i></a>
+                {% elif perms.pitomnik.view_savingjob_admin %}
+                    <a class="text-decoration-none"
+                       href="{% url "pitomnik:savingjob:list_region_admin" organization_id %}"><i
+                            class="fas fa-arrow-left text-white"></i></a>
+                {% endif %}
+                <span>{{ object_list.first.savingjob.road_district }}</span>
+                <span></span>
+            </div>
+            <div class="mansory p-4">
+
+                {% for object in object_list %}
+                    <div onclick="imageModal(this)" class="imageCont"
+                         data-toggle="modal"
+                         data-target="#exampleModalCenter">
+                        <img src="{{ object.image.url }}"
+                             alt="img">
+                    </div>
+                {% endfor %}
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1"
+                     role="dialog" aria-labelledby="exampleModalCenterTitle"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg"
+                         role="document">
+                        <div class="modal-content rounded-border border-0">
+                            <div class="modal-body p-0">
+                                <button type="button" class="close btn-close"
+                                        data-dismiss="modal" aria-label="Close">
+                                    <i class="far fa-times-circle text-white"></i>
+                                </button>
+                                <img id="modal-img" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block additional_js %}
+    <script>
+        imageModal = (element) => {
+            let imageUrl = element.childNodes[1].src
+            document.getElementById("modal-img").src = imageUrl
+        }
+    </script>
+{% endblock %}

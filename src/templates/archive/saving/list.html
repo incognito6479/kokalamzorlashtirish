@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span><p><i class="fas fa-bars"></i> Сақлаш </p></span>
+
+            </div>
+
+            <div class="card-body pt-1">
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ҳудудий корхона номи</th>
+                            <th>Хатловдан ўтказилган мавжуд дарахтлар</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            {% for saving in object_list %}
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ saving.name }}</td>
+                                <td>{{ saving.tree_quantity }}</td>
+                                </tr>
+                            {% endfor %}
+                            <td></td>
+                            <td>Жами:</td>
+                            <td>{{ total_quantity }}</td>
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

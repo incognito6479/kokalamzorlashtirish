@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <form method='post' action="">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="modal-footer">
+            <a href="{% url "pitomnik:planttype:list" %}" class="btn btn-danger text-white ">Орқага қайтиш</a>
+            {% if  request.resolver_match.view_name == "pitomnik:plant:add" %}
+                <button type="submit" class="btn btn-success">Қўшиш</button>
+            {% elif %}
+                <button type="submit" class="btn btn-success">Ўзгартириш</button>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+if ! hash python3; then
+    echo "python3 is not installed"
+    exit 1
+fi
+
+ver=$(python3 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+if [ "$ver" -lt "38" ]; then
+    echo "This script requires python 3.8 or greater"
+    exit 1
+fi
+
+
+function activate_development_environment() {
+    echo "Testing virtual environment path"
+
+    devlopment_environment_path="${PWD}/.env/bin/activate"
+    if [ ! -e "$devlopment_environment_path" ]; then
+        echo "Virtual environment not found!"
+        echo "Creating new virual environment"
+        python3 -m venv --prompt="v" .env 
+    fi
+    source $devlopment_environment_path
+    source "${PWD}/deployments/development/env"
+}
+
+function deactivate_development_environment() {
+    echo "Testing virtual environment"
+    echo $VIRTUAL_ENV
+    deactivate
+}
+
+function running_all_scripts() {
+    echo "Creating Super user"
+
+    echo "Running add_group_perm"
+    python ${PWD}/src/manage.py runscript add_group_perm
+    echo "Running regionroad_script"
+    python ${PWD}/src/manage.py runscript regionroad_script
+    echo "Running plants_script"
+    python ${PWD}/src/manage.py runscript plant_script
+}
+
+case $1 in
+  activate)
+    echo "===================================================================="
+    echo "- Starting activation"
+    echo "===================================================================="
+    activate_development_environment
+  	;;
+  deactivate)
+    echo "===================================================================="
+    echo "- Starting deactivation"
+    echo "===================================================================="
+    deactivate_development_environment
+  	;;
+  startdb)
+    echo "===================================================================="
+  	echo "- Starting database"
+    echo "===================================================================="
+    docker-compose -f ${PWD}/deployments/development/docker-compose.yml up -d
+  	;;
+  stopdb)
+    echo "===================================================================="
+  	echo "- Stopping database"
+    echo "===================================================================="
+    docker-compose -f ${PWD}/deployments/development/docker-compose.yml down 
+  	;;
+  runscripts)
+    echo "===================================================================="
+  	echo "- Running all scripts"
+    echo "===================================================================="
+    running_all_scripts
+    ;;
+  *)
+  	echo "Sorry, I don't understand"
+  	;;
+esac

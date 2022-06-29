@@ -1,0 +1,5 @@
+export DJANGO_SETTINGS_MODULE="config.settings.development"
+export PROJECT_NAME="landscaping"
+export PROJECT_POSTGRES_DB="landscaping"
+export PROJECT_POSTGRES_USER="landscaping"
+export PROJECT_POSTGRES_PASSWORD="landscaping"

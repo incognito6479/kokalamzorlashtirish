@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% load pitomnik_tags %}
+{% block content %}
+
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="tableCont">
+
+            <div class="tableHeader">
+                <div class="m-2">
+                    <i class="fa fa-align-justify mx-2"></i>
+                    Питомник парвариш ишлари
+                </div>
+            </div>
+            <div class="tableContent">
+
+                {% include "add.html" with add_url="pitomnik:pitomniksavingjob:add" permission=perms.pitomnik.add_pitomniksavingjob %}
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <tr>
+                            <th rowspan="3">#</th>
+                            <th rowspan="3">Кўчат турлари</th>
+                            <th rowspan="3">Жами кўчатлар сони</th>
+                            <th rowspan="3">Экилган майдон</th>
+                            <th colspan="3">Агротехник ва Агрокимёвий
+                                тадбирлар
+                            </th>
+                            <th colspan="2" rowspan="2">Питомникда жалб
+                                қилинган
+                            </th>
+                            <th rowspan="3" width="15%">Aмаллар</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">Агротехник тадбирлар
+                                (шудгорлаш, чизиллаш, чопиқ қилиш ва ҳ.к)
+                            </th>
+                            <th colspan="2">Ўғитлар билан озиқлантириш</th>
+                        </tr>
+                        <tr>
+                            <th>Минерал</th>
+                            <th>Органик</th>
+                            <th>Ишчилар</th>
+                            <th>Техника</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for plant_type in plant_type_object %}
+                            <tr>
+                                <td></td>
+                                <td>{{ plant_type.plants__type|plant_type_label }}</td>
+                                <td>{{ plant_type.total_total_plants }}</td>
+                                <td>{{ plant_type.total_planted_area | get_decimal }}</td>
+                                <td>{{ plant_type.total_agrotechnical_measures | get_decimal }}</td>
+                                <td>{{ plant_type.total_mineral | get_decimal }}</td>
+                                <td>{{ plant_type.total_organic | get_decimal }}</td>
+                                <td>{{ plant_type.total_workers }}</td>
+                                <td>{{ plant_type.total_technique }}</td>
+                            </tr>
+                            {% for pitomniksavingjob in object_list %}
+                                {% if pitomniksavingjob.plants.type == plant_type.plants__type %}
+                                    <tr>
+                                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                        <td>{{ pitomniksavingjob.plants.name }}</td>
+                                        <td>{{ pitomniksavingjob.total_plants }}</td>
+                                        <td>{{ pitomniksavingjob.planted_area | get_decimal }}</td>
+                                        <td>{{ pitomniksavingjob.agrotechnical_measures | get_decimal }}</td>
+                                        <td>{{ pitomniksavingjob.mineral | get_decimal }}</td>
+                                        <td>{{ pitomniksavingjob.organic | get_decimal }}</td>
+                                        <td>{{ pitomniksavingjob.workers }}</td>
+                                        <td>{{ pitomniksavingjob.technique }}</td>
+                                        <td>
+                                            {% include "view_image.html" with permission=perms.pitomnik.view_pitomniksavingjobimage   image_url="pitomnik:pitomniksavingjob:images"   object=pitomniksavingjob %}
+                                            {% include "change.html" with permission=perms.pitomnik.view_pitomniksavingjob  change_url="pitomnik:pitomniksavingjob:change"   id=pitomniksavingjob.id %}
+                                            {% include "delete.html" with permission=perms.pitomnik.delete_pitomniksavingjob   delete_url="pitomnik:pitomniksavingjob:delete"   id=pitomniksavingjob.id   message=" Белгиланга парвариш ўчирилади!" %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% load production_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content">
+        <div class="tableCont">
+            <div class="tableHeader">
+                <div class="text-center">{{ year }} йил
+                    1 {{ month | to_string }} ҳолатига умумий фойдаланишдаги
+                    автомобиль йўлларини кўкаламзорлаштириш
+                    ишлари бўйича бажарилган ишлар маълумоти
+                </div>
+
+            </div>
+            <div class="tableContent">
+                <div>
+                    <div class="table-responsive table-scrollbar">
+                        <form method="get"
+                              action="{% url "production:stat:stat_republic" %}">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ form.year | as_crispy_field }}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    {{ form.month | as_crispy_field }}
+                                </div>
+
+                                <div class="form-group col-md-1 d-flex align-items-end">
+                                    <button type="submit"
+                                            class="btn btn-secondary"
+                                            style="margin-bottom: 1rem">
+                                        <i class="fas fa-search text-white"></i>
+                                    </button>
+
+                                </div>
+                                <div class="d-flex justify-content-end mr-3 p-2">
+
+                                    <button
+                                            style="margin-bottom: 1rem"
+                                            class="btn btn-success"
+                                            id="download_button">Юклаб олиш
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+
+                                <th rowspan="3">УК лар НОМИ</th>
+                                <th class="p-1" colspan="6">{{ year }} йил</th>
+                                <th class="p-1" colspan="4">шу жумладан ҳисобит
+                                    ({{ month | to_string }}) ойида
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>йиллик режа</th>
+                                <th>йил бошидан режа</th>
+                                <th>йил бошидан бажарилиши</th>
+                                <th>%</th>
+                                <th>йил бошидан молиялаштирилиши</th>
+                                <th>режа</th>
+                                <th>бажарилиши</th>
+                                <th>%</th>
+                                <th>молиялаштирилиши</th>
+                            </tr>
+                            <tr class="small-padding">
+                                <th>млн.сўм</th>
+                                <th>млн.сўм</th>
+                                <th>млн.сўм</th>
+                                <th></th>
+                                <th>млн.сўм</th>
+                                <th>млн.сўм</th>
+                                <th>млн.сўм</th>
+                                <th></th>
+                                <th>млн.сўм</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if request.user.is_staff %}
+                                {% for organization in organizations %}
+{#                                    {% if organization.id == user_org_id %}#}
+                                        <tr class="custom-green-bg">
+                                            <td colspan="11">
+                                                {{ organization.name }}
+                                            </td>
+                                        </tr>
+                                        {% for object in object_list %}
+                                            {% if organization.id == object.yearly__organization %}
+                                                <tr>
+                                                    <td>{{ object.road_type|road_type }}</td>
+                                                    <td>{{ object.yearly_plan_money|intcomma }}</td>
+                                                    <td>{{ object.monthly_plan_sum_until_month|intcomma }}</td>
+                                                    <td>{{ object.production_money_until_month |intcomma }}</td>
+                                                    <td>
+                                                        {{ object.production_money_until_month| procent:object.monthly_plan_sum_until_month }}
+                                                    </td>
+                                                    <td>{{ object.monthly_financing_sum_until_month |intcomma }}</td>
+                                                    <td>{{ object.monthly_plan_sum_month |intcomma }}</td>
+                                                    <td>{{ object.production_money_month |intcomma }}</td>
+                                                    <td>
+                                                        {{ object.production_money_month|procent:object.monthly_plan_sum_month }}
+                                                    </td>
+                                                    <td>{{ object.monthly_financing_sum_month |intcomma }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+{#                                    {% endif %}#}
+                                {% endfor %}
+                            {% else %}
+                                {% for organization in organizations %}
+                                    {% if organization.id == user_org_id %}
+                                        <tr class="custom-green-bg">
+                                            <td colspan="11">
+                                                {{ organization.name }}
+                                            </td>
+                                        </tr>
+                                        {% for object in object_list %}
+                                            {% if organization.id == object.yearly__organization %}
+                                                <tr>
+                                                    <td>{{ object.road_type|road_type }}</td>
+                                                    <td>{{ object.yearly_plan_money|intcomma }}</td>
+                                                    <td>{{ object.monthly_plan_sum_until_month|intcomma }}</td>
+                                                    <td>{{ object.production_money_until_month |intcomma }}</td>
+                                                    <td>
+                                                        {{ object.production_money_until_month| procent:object.monthly_plan_sum_until_month }}
+                                                    </td>
+                                                    <td>{{ object.monthly_financing_sum_until_month |intcomma }}</td>
+                                                    <td>{{ object.monthly_plan_sum_month |intcomma }}</td>
+                                                    <td>{{ object.production_money_month |intcomma }}</td>
+                                                    <td>
+                                                        {{ object.production_money_month|procent:object.monthly_plan_sum_month }}
+                                                    </td>
+                                                    <td>{{ object.monthly_financing_sum_month |intcomma }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "local/js/production_excel.js" %}"></script>
+
+
+{% endblock %}

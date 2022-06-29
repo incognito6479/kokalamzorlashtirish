@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load pitomnik_tags %}
+{% load static %}
+{% block content %}
+    <div class="tableCont">
+        <div class="tableHeader">
+            <div class="m-2">
+                <i class="fa fa-align-justify mx-2"></i>
+                Техника турлари
+            </div>
+        </div>
+        <div class="tableContent">
+            <div class="table-add d-flex justify-content-end mb-3">
+                <a href="{% url "vehicles:admin:add_type" %}"
+                   class="btn btn-warning text-white">
+                    <i class="fas fa-plus text-light"></i>
+                </a>
+            </div>
+            <div>
+                <div class="table-responsive table-scrollbar">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th >№</th>
+                            <th>Техника тури номи</th>
+                            <th>Aмаллар</th>
+                        </tr>
+
+                        </thead>
+                        <tbody class="tableBody">
+                        <!-- for loop -->
+                        {% for vehicle in object_list %}
+                            <tr class="technique-list modal-button">
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                            <td>{{ vehicle.name }}</td>
+                                <td>
+                                    <a href="{% url "vehicles:admin:change_type" vehicle.id %}"
+                                       class="btn btn-success">
+                                        <i class="fas fa-pencil-alt text-white"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

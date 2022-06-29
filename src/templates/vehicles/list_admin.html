@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+        <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                 <div class="d-flex justify-content-between" style="font-size: 20px">
+                    <span class="text-white">Техникалар ҳақида малумот</span>
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+            <div class="card-body pt-0">
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                      <thead>
+                        <tr>
+                            <th rowspan="2">№</th>
+                            <th rowspan="2">Ташкилот номи</th>
+                            <th rowspan="2">Технилар Сони</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for vehicle in object_list %}
+                             <tr class="technique-list modal-button">
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td><a href="{% url "vehicles:admin:list_by_organization" vehicle.organization__id %}">{{ vehicle.organization__name }}</a>
+                                <td>{{ vehicle.sum }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+

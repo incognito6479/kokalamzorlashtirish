@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load math_tags %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <p style="text-align: center;"><i class="fas fa-bars"></i>
+                    "Ўзйўлкўкаламзорлаштириш "УК тизимидаги  унитар корхоналарнинг
+                    иш ҳақи бўйича тўловлари ва қарздорлиги тўғрисида маълумот</p>
+                </span>
+
+            </div>
+
+            <div class="card-body pt-0">
+                <div id="table" class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Корхоналар номи</th>
+                            <th>{{ date }} ҳолатига қарздорлик</th>
+                            <th>Жорий ойда хисобланди (начисления)</th>
+                            <th>{{ date }} кунлари давомида тўланди</th>
+                            <th>{{ date }} ҳолатига қолдиқ</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <form method="GET" action="{% url "accounting:salary:list" %}" class="form-row">
+                                <td colspan="2">
+                                    <input class="form-control mb-2" name="date" type="date">
+                                </td>
+                                <td>
+                                    <button class="btn btn-success float-left " style="margin-bottom: 8px"><i
+                                            class="fa fa-search text-white"></i>
+                                    </button>
+                                </td>
+                                <td colspan="2">
+
+                                </td>
+
+                            </form>
+                        </tr>
+
+                        {% for obj in object_list %}
+                            <tr>
+                                <td> {{ obj.organization__name }}</td>
+                                <td>  {{ obj.initial }}</td>
+                                <td> {{ obj.income }}</td>
+                                <td> {{ obj.outcome }}</td>
+                                <td> {{ obj.initial|add:obj.income|sub:obj.outcome}}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+  <link rel="stylesheet" href="{% static "vendor/css/bootstrap/bootstrap.min.css" %}">
+    <!-- main -->
+    <link rel="stylesheet" href="{% static "local/css/main.css" %}">
+    <!-- font awesome locale -->
+        <link rel="stylesheet" href="{% static "local/css/pitomnik.css" %}">
+
+    <link rel="stylesheet" href="{% static "vendor/fonts/css/all.css" %}">
+
+    <title>Page not Found</title>
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/2220/2220061.svg">
+</head>
+<body>
+
+<div class="wrapper-404">
+
+    <div class="content-404">
+        <div class="container-404">
+            <span>4</span>
+            <span>0</span>
+            <span>4</span>
+        </div>
+        <div id="oops">
+            <p><span>Oops!</span> Саҳифа топилмади</p>
+        </div>
+        <div id="description-404">
+            <p>Sahifa mavjud emas!!! <br> Сиз саҳифа адрессини нотоғри ёзган бўлишингиз мумкин.</p>
+        </div>
+        <a id="back" href="{% url "pitomnik:map" %}">
+            Бош Саҳифа
+        </a>
+    </div>
+</div>
+
+
+<!-- Jquery -->
+<script src="{% static "vendor/js/JQuery.js" %}"></script>
+<!-- bootstrap -->
+<script src="{% static "vendor/js/bootstrap/bootstrap.min.js" %}"  ></script>
+<!-- bootstrap date piker -->
+<script src="{% static "vendor/js/datepiker-js/gijgo.min.js" %}" type="text/javascript"></script>
+
+<script src="{% static "local/js/main.js" %}"></script>
+
+
+
+
+
+
+</body>
+</html>

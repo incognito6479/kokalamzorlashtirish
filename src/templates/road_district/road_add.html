@@ -1,0 +1,75 @@
+{#{% extends "base.html" %}#}
+{#{% load static %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% block content %}#}
+{##}
+{#    <div class="d-flex justify-content-center align-items-center p-3">#}
+{#        <div class="form-container bg-white shadow p-5 rounded w-100 ">#}
+{#            <form method='post' action="">#}
+{#                {% csrf_token %}#}
+{#                {{ organization }}#}
+{#                #}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
+{##}
+{#{% block additional_js %}#}
+{#    <script src="{% static "vendor/js/multiselect.js" %}"></script>#}
+{#    <script src="{% static "local/js/multiselect.js" %}"></script>#}
+{#{% endblock %}#}
+
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+{% load pitomnik_tags %}
+{% block content %}
+
+    <div class="tableCont">
+        <div class="tableHeader">
+            <h3 class="text-white m-0">{{ organization }}</h3>
+            <span></span>
+        </div>
+        <div class="d-flex ml-auto px-4 py-4">
+            <form action="{% url 'pitomnik:road_add' %}" method="get" class="d-flex ml-auto px-4">
+                {% csrf_token %}
+                <input name="search_input"/>
+                <button type="submit" class="btn btn-secondary refreshing_button">
+                    <i class="fas fa-search refreshing_button"></i>
+                </button>
+            </form>
+            {% include "road_district/road_add_button.html" %}
+        </div>
+
+        <div class="tableContent">
+            <div class="table-responsive table-scrollbar">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Йўл номи</th>
+                        <th rowspan="2">Йўл тури</th>
+                        <th rowspan="2">Туман номи</th>
+                        <th rowspan="2">Aмаллар</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in page_obj %}
+                            <tr>
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ object.road.code }}  {{ object.road.title }}</td>
+                                <td>{{ object.road.road_type |road_type_label }}</td>
+                                <td>{{ object.district.name }}</td>
+                                <td>
+                                    {% include 'road_district/road_change.html' with change_url='pitomnik:road_change' id=object.id %}
+                                    {% include 'road_district/road_delete.html' with id=object.id delete_url="pitomnik:road_delete" message="Белгиланган йўл ўчирилади!" %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

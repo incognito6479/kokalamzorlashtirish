@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load pitomnik_tags %}
+{% block content %}
+
+ <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                 <div class="d-flex justify-content-between" style="font-size: 20px">
+                    {% if request.resolver_match.view_name == "pitomnik:landscapejob:list_region_admin" %}
+                        <a class="text-decoration-none" href="{% url "pitomnik:landscapejob:list_admin" %}"><i class="fas fa-arrow-left text-white"></i></a>
+                    {% else %}
+                            <span></span>
+                    {% endif %}
+                    <span class="text-white">{{ object_list.first.organization.name }}</span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div  id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                            <tr>
+                                <th rowspan="3">#</th>
+                                <th rowspan="3">Автомобил йулининг номи</th>
+                                <th rowspan="3">Манзили</th>
+                                <th colspan="6">Ландшафт-дизайн иш турлари</th>
+                                <th rowspan="3" width="15%">Aмаллар</th>
+                            </tr>
+                            <tr>
+                                <th class="coll" scope="col" colspan="2">Айлана(круг)</th>
+                                <th class="coll" scope="col" colspan="2">Йул ўтказгич ва чорраха</th>
+                                <th class="coll" scope="col" colspan="1">Панно ва стела</th>
+                                <th class="coll" scope="col" colspan="1">Йул ёкалари</th>
+
+                            </tr>
+                            <tr>
+                                <th class="coll" scope="col">дона</th>
+                                <th class="coll" scope="col">m<sup>2</sup></th>
+                                <th class="coll" scope="col">дона</th>
+                                <th class="coll" scope="col">m<sup>2</sup></th>
+                                <th class="coll" scope="col">дона</th>
+                                <th class="coll" scope="col">км</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for landscape in object_list  %}
+                            <tr>
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ landscape.road_district.road.code }} {{ landscape.road_district.road.title }}</td>
+                                <td>{{ landscape.road_slice | array_to_range_str}}</td>
+                                <td>{{ landscape.round_quantity }}</td>
+                                <td>{{ landscape.round_area | get_decimal }}</td>
+                                <td>{{ landscape.cross_quantity }}</td>
+                                <td>{{ landscape.cross_area | get_decimal }}</td>
+                                <td>{{ landscape.panno_quantity }}</td>
+                                <td>{{ landscape.road_side_length | get_decimal }}</td>
+                                <td>
+                                    {% include "view_image.html" with permission=perms.pitomnik.view_landscapejobimage   image_url="pitomnik:landscapejob:images"   object=landscape %}
+                                    {% include "change.html" with permission=perms.pitomnik.change_landscapejob   change_url="pitomnik:landscapejob:change_for_admin"   id=landscape.id %}
+                                    {% include "delete.html" with permission=perms.pitomnik.delete_landscapejob   delete_url="pitomnik:landscapejob:delete_for_admin"   id=landscape.id %}
+                                </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+{% load pitomnik_tags %}
+{% block content %}
+
+    <div class="tableCont">
+        <div class="tableHeader justify-content-center">
+            <h3 class="m-0">Республика</h3>
+        </div>
+        <div class="tableContent">
+            <div class="table-responsive table-scrollbar">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Йўл тури</th>
+                        <th rowspan="2">Йўл узунлиги</th>
+                        <th rowspan="2">Дарахтлар сони</th>
+                        <th colspan="3">Дарахт тури</th>
+                        <th rowspan="2">Кўкаламзорлаштирилган қисми</th>
+                        <th rowspan="2" colspan="2">Талаб</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Япроқ баргли</th>
+                        <th scope="row">Игна баргли</th>
+                        <th scope="row">Бута</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="custom-green-bg">
+                        <td colspan="9">
+                            Республика
+                        </td>
+                    </tr>
+                    {% for object in republic_by_road_type %}
+                        <tr>
+                            <td></td>
+                            <td>{{ object.road__road_type |road_type_label }}</td>
+                            {% for key_i, value_i in total_send_for_republic.items %}
+                                {% if key_i == object.road__road_type %}
+                                    {% for key_j, value_j in value_i.items %}
+                                        <td class="get_road_number">{{ value_j | round_upper }}</td>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+{#                            <td class="get_road_number">{{ object.road__road_type | road_type_label | road_slice }}</td>#}
+                            <td>{{ object.total_quantity | floatformat:0 }}</td>
+                            <td>{{ object.leafy }}</td>
+                            <td>{{ object.nail_leaf }}</td>
+                            <td>{{ object.bushes }}</td>
+                            <td>{{ object.planted_road | floatformat:0 }} metr</td>
+                            <td>{{ object.requirements | floatformat:0 }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td>Жами</td>
+                        <td class="showing_total_by_roads"></td>
+                        <td>{{ republic_sum.total_quantity | floatformat:0}}</td>
+                        <td>{{ republic_sum.leafy }}</td>
+                        <td>{{ republic_sum.nail_leaf }}</td>
+                        <td>{{ republic_sum.bushes }}</td>
+                        <td>{{ republic_sum.planted_road | floatformat:0 }} metr</td>
+                        <td>{{ republic_sum.requirements | floatformat:0 }}</td>
+                    </tr>
+                    {% for region in region_list %}
+                        <tr class="custom-green-bg">
+                            <td colspan="9">
+                                <a href="{% url "pitomnik:plantedplants:admin_road_statistics" region.region_id %}">{{ region.region_name }}</a>
+                            </td>
+                        </tr>
+                        {% for object in object_list %}
+                            {% if region.region_id == object.district__region__id %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{ object.road__road_type | road_type_label }}</td>
+                                    {% for key_i, value_i in dict_to_send.items %}
+                                        {% if key_i == region.region_id %}
+                                            {% for j in value_i %}
+                                                {% for key_q, value_q in j.items %}
+                                                    {% if key_q == object.road__road_type %}
+                                                        {% for key_p, value_p in value_q.items %}
+                                                            <td>{{ value_p | round_upper }}</td>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+{#                                   <td>{{ object.road_slice | round_upper }}</td>#}
+                                    <td>{{ object.total_quantity | floatformat:0  }}</td>
+                                    <td>{{ object.leafy }}</td>
+                                    <td>{{ object.nail_leaf }}</td>
+                                    <td>{{ object.bushes }}</td>
+                                    <td>{{ object.planted_road | floatformat:0  }} metr</td>
+                                    <td>{{ object.requirements | floatformat:0  }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td>Жами</td>
+{#                            <td>{{ region.road_slice | round_upper }}</td>#}
+                            {% for key_i, value_i in total_to_send.items %}
+                                {% if key_i == region.region_id %}
+{#                                    <td>{{ value_i }}</td>#}
+                                    {% for key_j, value_j in value_i.items %}
+                                        <td>{{ value_j | round_upper }}</td>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                          <td>{{ region.total_quantity | floatformat:0 }}</td>
+                            <td>{{ region.leafy }}</td>
+                            <td>{{ region.nail_leaf }}</td>
+                            <td>{{ region.bushes }}</td>
+                            <td>{{ region.planted_road | floatformat:0 }} metr</td>
+                            <td>{{ region.requirements | floatformat:0 }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock content %}
+
+{% block additional_js %}
+    <script>
+        let t = 0;
+        $('.get_road_number').each(function(){
+           t += parseInt($(this).html());
+        });
+        $('.showing_total_by_roads').html(t);
+
+    </script>
+{% endblock %}

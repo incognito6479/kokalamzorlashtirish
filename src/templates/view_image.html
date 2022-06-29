@@ -1,0 +1,7 @@
+{% if permission %}
+    <a href="{% url image_url object.id %}"
+       type="button"
+       class="btn btn-success {% if not object.has_image %}disabled{% endif %}"
+       role="button"><i
+            class="fas fa-images text-white"></i></a>
+{% endif %}

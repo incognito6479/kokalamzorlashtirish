@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <form method='post' action="">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="modal-footer">
+            <a href="{% url "pitomnik:planttype:list" %}" class="btn btn-danger text-white ">Орқага қайтиш</a>
+            <button type="submit" class="btn btn-success">Ўзгартириш</button>
+        </div>
+    </form>
+{% endblock %}

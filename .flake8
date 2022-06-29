@@ -1,0 +1,20 @@
+[flake8]
+exclude = /(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \venv
+  | \env
+  | \.env
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+max-line-length = 79
+max-complexity = 10
+statistics = True
+dictionaries=en_US,python,technical,django
+whitelist = whitelist.txt

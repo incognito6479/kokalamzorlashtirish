@@ -1,0 +1,46 @@
+{% if permission %}
+    <!-- Button trigger modal -->
+    <button type="button"
+            class="btn btn-danger "
+            data-toggle="modal"
+            data-target="#model-id{{ id }}">
+        <i class="far fa-trash-alt text-white"></i>
+    </button>
+    <!-- Modal -->
+    <div class="modal fade"
+         id="model-id{{ id }}"
+         tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered d-flex justify-content-center"
+             role="document">
+            <div class="modal-content border-0"
+                 style="width: 400px">
+                <div class="modal-body">
+                    <h1>Ўчирилади</h1>
+                    <p>
+                        {{ message }}
+                    </p>
+                    <div class="w-100 d-flex justify-content-between align-items-center">
+                        <form action="{% url delete_url id %}"
+                              method="post"
+                              style="display: contents">
+                            {% csrf_token %}
+                            <button type="button"
+                                    style="flex: 0.45"
+                                    class="btn btn-outline-secondary"
+                                    data-dismiss="modal">
+                                Ёқ
+                            </button>
+                            <button type="submit"
+                                    style="flex: 0.45"
+                                    class="rounded-lg btn btn-danger">
+                                Ҳа
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span><p><i class="fas fa-bars"></i> Ташкилот жадвали</p></span>
+
+            </div>
+
+
+            <div class="card-body pt-1">
+                <div class="card-title p-2 m-0 d-flex justify-content-end">
+                </div>
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <td>№</td>
+                        <td>Ташкилот номи</td>
+                        <td>Статистикалар</td>
+                        </thead>
+                        <tbody>
+
+                        {% for organization in object_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    {{ organization.name }}
+                                </td>
+                                <td><a style="text-decoration: underline" href="{% url "pitomnik:pitomnikplants:admin-stats-by-organization" organization.id %}">
+                                    питомник ўсимликлари
+                                    </a>  |
+                                    <a style="text-decoration: underline" href="{% url "pitomnik:pitomnik:admin_list" organization.id %}">
+                                    питомниклар |
+                                    </a>
+                                     <a style="text-decoration: underline" href="{% url "pitomnik:plantedplants:admin_list" organization.id %}">
+                                    экилган ўсимликлар
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock %}

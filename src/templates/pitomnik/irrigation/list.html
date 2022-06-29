@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block additional_css %}
+    <link rel="stylesheet"
+          href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+{% endblock %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-center"
+                     style="font-size: 20px">
+                    <span class="text-white ">Суғориш жадвали</span>
+                    <span></span>
+                </div>
+
+            </div>
+            <div class="tableContent">
+                {% include "add.html" with add_url="pitomnik:irrigation:add" permission=perms.pitomnik.add_irrigation %}
+                <div>
+                    <div class="table-responsive table-scrollbar">
+
+                        <table class="table plant">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Автомобил йулининг номи</th>
+                                <th>Манзили</th>
+                                <th>Дарахтлар (дона)</th>
+                                <th>Узунлиги (км)</th>
+                                <th width="20%">Суғориш тури</th>
+                                <th width="15%">Aмаллар</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <form>
+                                <tr>
+                                    <td colspan="2">
+                                        {{ filter.form.road_district__road | as_crispy_field }}
+                                    </td>
+                                    <td colspan="3">
+                                    </td>
+                                    <td> {{ filter.form.irrigation_type | as_crispy_field }}</td>
+                                    <td>
+                                        <button type="submit"
+                                                class="btn btn-secondary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </form>
+                            {% for irrigation in filter.qs %}
+                                <tr>
+                                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                    <td>{{ irrigation.road_district.road.code }} {{ irrigation.road_district.road.title }}</td>
+                                    <td>{{ irrigation.road_slice |array_to_range_str }}</td>
+                                    <td>{{ irrigation.tree_quantity }}</td>
+                                    <td>{{ irrigation.length | get_decimal }}</td>
+                                    <td>{{ irrigation.irrigation_type|irrigation_type_label }}</td>
+                                    <td>
+                                        {% include "view_image.html" with permission=perms.pitomnik.view_irrigationimage   image_url="pitomnik:irrigation:images"   object=irrigation %}
+                                        {% include "change.html" with permission=perms.pitomnik.change_irrigation  change_url="pitomnik:irrigation:change"   id=irrigation.id %}
+                                        {% include "delete.html" with permission=perms.pitomnik.delete_irrigation  delete_url="pitomnik:irrigation:delete"   id=irrigation.id   message=" Белгиланган Суғориш ўчирилади!" %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include "pagination.html" %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block additional_js %}
+    <script src="{% static "vendor/select2-4.1.0-beta.1/dist/js/select2.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#id_road_district__road").select2();
+            $("#id_irrigation_type").select2({minimumResultsForSearch: Infinity});
+        });
+
+    </script>
+{% endblock %}

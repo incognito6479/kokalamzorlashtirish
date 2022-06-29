@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+{% load pitomnik_tags %}
+{% block content %}
+
+    <div class="tableCont">
+        <div class="tableHeader">
+            {% if request.resolver_match.view_name == "pitomnik:plantedplants:admin_road_statistics" %}
+                <a class="text-decoration-none"
+                   href="{% url "pitomnik:plantedplants:republic_statistics" %}"><i
+                        class="fas fa-arrow-left text-white"></i></a>
+            {% else %}
+                <span></span>
+            {% endif %}
+            <h3 class="text-white m-0">{{ road_type.first.district__region__name }}</h3>
+            <span></span>
+        </div>
+
+        <div class="tableContent">
+
+            <div class="table-responsive table-scrollbar">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Йўл номи</th>
+                        <th rowspan="2">Йўл тури</th>
+                        <th rowspan="2">Туман номи</th>
+                        <th rowspan="2">Йўл манзили</th>
+                        <th rowspan="2">Йўл узунлиги</th>
+                        <th rowspan="2">Дарахтлар сони</th>
+                        <th colspan="3">Дарахт тури</th>
+                        <th rowspan="2">Кўкаламзорлаштирилган қисми</th>
+                        <th rowspan="2" colspan="2">Талаб</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Япроқ баргли</th>
+                        <th scope="row">Игна баргли</th>
+                        <th scope="row">Бута</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in road_type %}
+                        <tr class="custom-green-bg bordered">
+                            <td colspan="2">{{ object.road__road_type |road_type_label }} </td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            {% for key_i, value_i in t.items %}
+                                {% if key_i == object.road__road_type %}
+                                    {% for key_j, value_j in value_i.items %}
+                                        <td>{{ value_j | round_upper }}</td>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+{#                            <td>{{ object.road_slice | round_upper }}</td>#}
+                            <td>{{ object.total_quantity }}</td>
+                            <td>{{ object.leafy }}</td>
+                            <td>{{ object.nail_leaf }}</td>
+                            <td>{{ object.bushes }}</td>
+                            <td>{{ object.planted_road | floatformat:0  }} metr</td>
+                            <td>{{ object.requirements | floatformat:0 }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="custom-green-bg bordered">
+                        <td colspan="2">Жами</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+{#                        <td>{{ region_all.road_slice | round_upper }}</td>#}
+                        {% for key_i, value_i in total.items %}
+                            <td>{{ value_i | round_upper }}</td>
+                        {% endfor %}
+                        <td>{{ region_all.total_quantity | floatformat:0 }}</td>
+                        <td>{{ region_all.leafy }}</td>
+                        <td>{{ region_all.nail_leaf }}</td>
+                        <td>{{ region_all.bushes }}</td>
+                        <td>{{ region_all.planted_road | floatformat:0 }} metr</td>
+                        <td>{{ region_all.requirements | round_upper }}</td>
+                    </tr>
+
+                    {% for object in object_list %}
+                        <tr>
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                            <td>{{ object.road.code }}  {{ object.road.title }}</td>
+                            <td>{{ object.road.road_type |road_type_label }}</td>
+                            <td>{{ object.district.name }}</td>
+                            <td>{{ object.road_from | get_decimal }}-{{ object.road_to | floatformat:0 }}</td>
+                            <td>{{ object.road_to |sub:object.road_from  | floatformat:0 }}</td>
+                            <td>{{ object.total_quantity | floatformat:0 }}</td>
+
+                            <td>{{ object.leafy }}</td>
+                            <td>{{ object.nail_leaf }}</td>
+                            <td>{{ object.bushes }}</td>
+                            <td>{{ object.planted_road | floatformat:0 }}</td>
+                            <td>{{ object.requirement | floatformat:0 }}</td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

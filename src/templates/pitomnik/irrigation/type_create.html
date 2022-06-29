@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <form method='post' action="">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="form-row">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" onclick="test()">Қўшиш</button>
+        </div>
+    </form>
+{% endblock %}

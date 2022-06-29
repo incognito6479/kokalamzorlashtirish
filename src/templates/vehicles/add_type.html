@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center h-110 p-4">
+        <div class="form-container bg-white shadow p-5 rounded w-100 h-100">
+            <form id="click-only-once" method='post' action="">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="modal-footer">
+                    <a href="{% url "vehicles:admin:list_type" %}" class="btn btn-secondary text-white ">Орқага қайтиш</a>
+                    {% if request.resolver_match.view_name == "vehicles:admin:add_type" %}
+                        <button id="form-button" type="submit" class="btn btn-success">Қўшиш</button>
+                    {% elif request.resolver_match.view_name == "vehicles:admin:change_type" %}
+                        <button id="form-button" type="submit" class="btn btn-success">Ўзгартириш</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <div class="d-flex justify-content-center align-items-center p-4">
+        <div class="form-container bg-white shadow p-5 rounded w-100 h-100">
+            <form id="click-only-once" method='post' action="">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="modal-footer">
+                    <a href="{% url "production:irrigation:list" %}" class="btn btn-secondary text-white ">Орқага
+                        қайтиш</a>
+                    <button id="form-button" type="submit" class="btn btn-success">Қўшиш</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block additional_js %}
+    <script src="{% static "local/js/production_months.js" %}"></script>
+    <script>
+        let form = document.getElementById("click-only-once")
+        let button = document.getElementById("form-button")
+        form.addEventListener("submit", () => {
+            button.setAttribute("disabled", "")
+        })
+    </script>
+{% endblock %}

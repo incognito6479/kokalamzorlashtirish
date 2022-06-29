@@ -1,0 +1,407 @@
+<div class="sidebar">
+    <div class="scrollbar">
+        <ul class="mb-5">
+            <li class="list {% if section == "map" %}active{% endif %}">
+                <a href="{% url "pitomnik:map" %}">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span class="sidebarItem">Харита</span>
+                </a>
+            </li>
+
+            <li onclick="dropdown(this)" id="dropdown_1"
+                class="dropdown-list w-100">
+                <div class="dropdownBtn">
+                    <a href="#">
+                        <i class="fas fa-tree"></i>
+                        <span class="sidebarItem dropdownItem">Питомник</span>
+                    </a>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdownContent">
+                    <ul>
+                        {% if perms.pitomnik.view_pitomnik %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:pitomnik:list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomnik:list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Питомник</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_pitomnikplants %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:pitomnikplants:list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomnikplants:list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Питомник ўсимликлари</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_pitomnikplants %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:pitomnikplants:pitomnik-plants-of-an-organization" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomnikplants:pitomnik-plants-of-an-organization" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Питомник ўсимликлари статистикаси</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_pitomnikplants_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:pitomnikplants:republic-pitomnik-plants" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomnikplants:republic-pitomnik-plants" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Республика Питомник ўсимликлари статистикаси</span>
+                                </a>
+                            </li>
+                            <li class="list w-100 {% if request.resolver_match.view_name == "pitomnik:pitomnikplants:admin_list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomnikplants:admin_list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Питомник ўсимликлари</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_pitomniksavingjob %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:pitomniksavingjob:list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:pitomniksavingjob:list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Питомник парвариш ишлари</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+
+            <li onclick="dropdown(this)" id="dropdown_2" class="dropdown-list">
+                <div class="dropdownBtn">
+                    <a href="#">
+                        <i class="fas fa-cogs"></i>
+                        <span class="sidebarItem dropdownItem">Техника</span>
+                    </a>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdownContent">
+                    <ul>
+                        {% if perms.vehicles.view_vehicle %}
+                            <li class="list {% if request.resolver_match.view_name == "vehicles:local:list" %} active{% endif %}">
+                                <a href="{% url "vehicles:local:list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Техника</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.vehicles.view_vehicle_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "vehicles:admin:organization" %} active{% endif %}">
+                                <a href="{% url "vehicles:admin:organization" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Техника (admin)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.vehicles.view_vehicle_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "vehicles:admin:list_type" %} active{% endif %}">
+                                <a href="{% url "vehicles:admin:list_type" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Техника турлари</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.vehicles.view_vehicle_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "vehicles:admin:list_by_type" %} active{% endif %}">
+                                <a href="{% url "vehicles:admin:list_by_type" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Техника турлари бўйича свод</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+
+            <li onclick="dropdown(this)" id="dropdown_4" class="dropdown-list">
+                <div class="dropdownBtn">
+                    <a href="#">
+                        <i class="fas fa-archive"></i>
+                        <span class="sidebarItem dropdownItem">Сақлаш жадвали</span>
+                    </a>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdownContent">
+                    <ul>
+                        {% if perms.pitomnik.view_plantedplants %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:plantedplants:list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:plantedplants:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Ўсимлик экиш маълумоти</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_savingjob %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:savingjob:list' %} active{% endif %}">
+                                <a href="{% url "pitomnik:savingjob:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Сақлаш жадвали</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_savingjob_admin %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:savingjob:list_admin' %} active{% endif %}">
+                                <a href="{% url "pitomnik:savingjob:list_admin" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Сақлаш жадвали (админ)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_newirrigation %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:newirrigation:list" %} active{% endif %}">
+                                <a href="{% url "pitomnik:newirrigation:list" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem"> Янги суғориш жадвали</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_newirrigation_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "pitomnik:newirrigation:list_admin" %} active{% endif %}">
+                                <a href="{% url "pitomnik:newirrigation:list_admin" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem"> Янги суғориш жадвали(админ)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_irrigation %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:irrigation:list' %} active{% endif %}">
+                                <a href="{% url "pitomnik:irrigation:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Кўчат суғориш жадвали</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_irrigation_admin %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:irrigation:list_admin' %} active{% endif %}">
+                                <a href="{% url "pitomnik:irrigation:list_admin" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Кўчат суғориш жадвали(админ)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_landscapejob %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:landscapejob:list' %} active{% endif %}">
+                                <a href="{% url "pitomnik:landscapejob:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Ландшафт Дизайни</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.pitomnik.view_landscapejob_admin %}
+                            <li class="list {% if request.resolver_match.view_name == 'pitomnik:landscapejob:list_admin' %} active{% endif %}">
+                                <a href="{% url "pitomnik:landscapejob:list_admin" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Ландшафт Дизайни(админ)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.archive.view_saving %}
+                            <li class="list {% if request.resolver_match.view_name == "archive:saving:list" %} active{% endif %}">
+                                <a href="{% url "archive:saving:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Сақлаш</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+
+            {#            <li onclick="dropdown(this)" id="dropdown_6" class="dropdown-list">#}
+            {#                <div class="dropdownBtn">#}
+            {#                    <a href="#">#}
+            {#                        <i class="fas fa-money-bill"></i>#}
+            {#                        <span class="sidebarItem dropdownItem">Дебитор ва Кредитор</span>#}
+            {#                    </a>#}
+            {#                    <i class="fas fa-chevron-down dropdown-icon"></i>#}
+            {#                </div>#}
+            {#                <div class="dropdownContent">#}
+            {#                    <ul>#}
+            {#                        {% if perms.accounting.view_debitcredit %}#}
+            {#                            <li class="list {% if request.resolver_match.view_name == 'accounting:debitcredit:list' %} active{% endif %}">#}
+            {#                                <a href="{% url "accounting:debitcredit:list" %}">#}
+            {#                                    <i></i>#}
+            {#                                    <span class="sidebarItem">Дебитор ва Кредитор қарздорлик тўғрисида маълумот</span>#}
+            {#                                </a>#}
+            {#                            </li>#}
+            {#                        {% endif %}#}
+            {#                        {% if perms.accounting.view_debitcredit_admin %}#}
+            {#                            <li class="list {% if request.resolver_match.view_name == 'accounting:debitcredit:admin_list' %} active{% endif %}">#}
+            {#                                <a href="{% url "accounting:debitcredit:admin_list" %}">#}
+            {#                                    <i></i>#}
+            {#                                    <span class="sidebarItem">Дебитор ва Кредитор қарздорлик тўғрисида маълумот(админ)</span>#}
+            {#                                </a>#}
+            {#                            </li>#}
+            {#                        {% endif %}#}
+            {#                    </ul>#}
+            {#                </div>#}
+            {#            </li>#}
+            <li onclick="dropdown(this)" id="dropdown_6" class="dropdown-list">
+                <div class="dropdownBtn">
+                    <a href="#">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span class="sidebarItem dropdownItem">Ишлаб чиқариш техник бўлими</span>
+                    </a>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdownContent">
+                    <ul>
+                        {% if perms.production.view_yearlyproductionplan %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:stat:stat_republic' %} active{% endif %}">
+                                <a href="{% url "production:stat:stat_republic" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Свод бажарган иш </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_yearlyproductionplan %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:stat:stat' %} active{% endif %}">
+                                <a href="{% url "production:stat:stat" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Лимит ўзлажтирилиши </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_yearlyproductionplan %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:yearly:list' %} active{% endif %}">
+                                <a href="{% url "production:yearly:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Йиллик режа </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_monthlyproductionplan %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:monthly:list' %} active{% endif %}">
+                                <a href="{% url "production:monthly:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Ойлик режа ва молиялаштириш </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_irrigationproduction %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:irrigation:list' %} active{% endif %}">
+                                <a href="{% url "production:irrigation:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Суғориш </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_landscapejobproduction %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:landscape:list' %} active{% endif %}">
+                                <a href="{% url "production:landscape:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Ландшафт дизайни: </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_savingjobproduction %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:saving:list' %} active{% endif %}">
+                                <a href="{% url "production:saving:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Сақлаш </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.production.view_plantingproduction %}
+                            <li class="list {% if request.resolver_match.view_name == 'production:planting:list' %} active{% endif %}">
+                                <a href="{% url "production:planting:list" %}">
+                                    <i></i>
+                                    <span class="sidebarItem">Зкиш </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+
+            {% if perms.pitomnik.view_plantedplants %}
+                <li class="list {% if request.resolver_match.view_name == "pitomnik:plantedplants:road_statistics" %} active{% endif %}">
+                    <a href="{% url "pitomnik:plantedplants:road_statistics" %}">
+                        <i style="font-size: 17px" class="fas fa-tree"></i>
+                        <span class="sidebarItem">Вилоят</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if perms.pitomnik.view_plantedplants_admin %}
+{#                <li class="list {% if request.resolver_match.view_name == "pitomnik:plantedplants:republic_statistics" %} active{% endif %}">#}
+{#                    <a href="{% url "pitomnik:plantedplants:republic_statistics" %}">#}
+{#                        <i style="font-size: 17px" class="fas fa-tree"></i>#}
+{#                        <span class="sidebarItem">Республика</span>#}
+{#                    </a>#}
+{#                </li>#}
+            <li onclick="dropdown(this)" id="dropdown_7" class="dropdown-list">
+                <div class="dropdownBtn">
+                    <a href="#">
+                        <i style="font-size: 17px" class="fas fa-tree"></i>
+                        <span class="sidebarItem dropdownItem">Республика</span>
+                    </a>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdownContent">
+                    <ul>
+                        <li class="list {% if request.resolver_match.view_name == "pitomnik:plantedplants:republic_statistics" %} active{% endif %}">
+                            <a href="{% url "pitomnik:plantedplants:republic_statistics" %}">
+                                <i></i>
+                                <span class="sidebarItem">Статистика</span>
+                            </a>
+                        </li>
+                        {% if perms.account.view_organization_admin %}
+                            <li class="list {% if request.resolver_match.view_name == "account:organizations" %} active{% endif %}">
+                                <a href="{% url "account:organizations" %}">
+                                    <i style="font-size: 17px"></i>
+                                    <span class="sidebarItem">Ташкилотлар</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+            {% endif %}
+
+            {% if perms.pitomnik.view_plant %}
+                <li class="list {% if request.resolver_match.view_name == "pitomnik:plant:list" %} active{% endif %}">
+                    <a href="{% url "pitomnik:plant:list" %}">
+                        <i style="font-size: 17px" class="fas fa-tree"></i>
+                        <span class="sidebarItem">Ўсимликлар</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if perms.regionroad.view_roaddistrict %}
+                <li class="list {% if request.resolver_match.view_name == 'regionroad:road-district-list' %} active{% endif %}">
+                    <a href="{% url "regionroad:road-district-list" %}">
+                        <i class="fas fa-water"></i>
+                        <span class="sidebarItem">Кўкаламзорлаштиришга талаб</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if perms.account.view_user %}
+                <li class="list {% if request.resolver_match.view_name == "account:list" %} active{% endif %}">
+                    <a href="{% url "account:list" %}">
+                        <i style="font-size: 17px" class="fas fa-user"></i>
+                        <span class="sidebarItem">Фойдаланувчилар</span>
+                    </a>
+                </li>
+            {% endif %}
+        <li class="list {% if request.resolver_match.view_name == "account:list" %} active{% endif %}">
+{#                    <a href="{% url "account:list" %}">#}
+                        <a href="{% url 'pitomnik:road_add' %}">
+                        <i style="font-size: 17px" class="fas fa-plus"></i>
+                        <span class="sidebarItem">Йўллар қўшиш</span>
+                    </a>
+                </li>
+        </ul>
+    </div>
+    <div id="sidebarToggle" class="sidebar-toggle">
+        <svg style="transition: 0.3s linear" width="1em" height="1em"
+             viewBox="0 0 16 16" class="bi bi-chevron-double-left"
+             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+            <path fill-rule="evenodd"
+                  d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+    </div>
+</div>
+

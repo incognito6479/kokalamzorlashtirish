@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load pitomnik_tags %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span><p><i class="fas fa-bars"></i> Суғориш Турлари</p></span>
+            </div>
+
+            <div class="card-body pt-1">
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <td>№</td>
+                        <td>Суғориш тури</td>
+                        <td>Суғориш ишлари сони</td>
+
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            {% for irrigationtype in object_list %}
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ irrigationtype.irrigation_type|irrigation_type_label}}</td>
+                                <td>{{ irrigationtype.irrigation_count }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

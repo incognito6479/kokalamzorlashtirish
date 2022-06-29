@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block additional_css %}
+    <link rel="stylesheet"
+          href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+    <link rel="stylesheet"
+          href="{% static "vendor/css/datepiker-css/gijgo.min.css" %}">
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center p-3">
+        <div class="form-container bg-white shadow p-5 rounded w-100 ">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block additional_js %}
+    <script src="{% static "vendor/select2-4.1.0-beta.1/dist/js/select2.js" %}"></script>
+    <script src="{% static "local/js/plant_list.js" %}"></script>
+    <script src="{% static "local/js/plant_list_by_plant_source.js" %}"></script>
+    <script src="{% static "local/js/district_list.js" %}"></script>
+    <script src="{% static "local/js/road_list.js" %}"></script>
+    <script src="{% static "vendor/js/datepiker-js/gijgo.min.js" %}"></script>
+    <script>
+        $('#id_planted_date').datepicker({format: 'yyyy-mm-dd'});
+        let form = document.getElementsByClassName("form-horizontal")[0]
+        let button = document.getElementById("submit-id-submit")
+        form.addEventListener("submit", () => {
+            button.setAttribute("disabled", "")
+        })
+    </script>
+
+    <script>
+        // showing edit instance
+        {% if pitomnik %}
+            $('#id_pitomnik').val({{ pitomnik }}).change();
+        {% endif %}
+        setTimeout(function(){
+            $('#id_plant').val({{ plant }}).change();
+            $('#id_district').val({{ district }}).change();
+            $('#id_quantity').val({{ quantity }}).change();
+            setTimeout(function(){
+                $('#id_road_district').val("{{ road_id }}").change();
+            }, 600);
+        }, 1000)
+    </script>
+{% endblock %}

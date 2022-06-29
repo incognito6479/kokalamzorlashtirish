@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block additional_css %}
+    <link rel="stylesheet" href="{% static "vendor/select2-4.1.0-beta.1/dist/css/select2.min.css" %}">
+    <link rel="stylesheet" href="{% static "vendor/css/datepiker-css/gijgo.min.css" %}">
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center p-3">
+        <div class="form-container bg-white shadow p-5 rounded w-100 ">
+            <form action="{% url 'pitomnik:road_change' pk %}" method="post" name="road_form">
+                {% csrf_token %}
+                <label>Йўл коди</label>
+                <input class="form-control m-3" type="text" value="{{ road_info.code }}" name="road_code">
+                <label>Йўл номи</label>
+                <input class="form-control m-3" type="text" value="{{ road_info.title }}" name="road">
+                <label>Йўл қисми</label>
+                <input class="form-control m-3" type="text" value="{{ road_slice }}" name="road_slice">
+                <label>Йўл тури</label>
+                <select class="form-control m-3" name="road_type">
+                    {% if road_info.road_type == 1 %}
+                        <option selected name="road_type" value="Халқаро">Халқаро</option>
+                    {% endif %}
+                    {% if road_info.road_type == 2 %}
+                        <option selected name="road_type" value="Давлат">Давлат</option>
+                    {% endif %}
+                    {% if road_info.road_type == 3 %}
+                        <option selected name="road_type" value="Маҳаллий">Маҳаллий</option>
+                    {% endif %}
+                    <option name="road_type" value="Халқаро">Халқаро</option>
+                    <option name="road_type" value="Давлат">Давлат</option>
+                    <option name="road_type" value="Маҳаллий">Маҳаллий</option>
+                </select>
+                <label>Туман/Шаҳар номи</label>
+                <select class="form-control m-3" name="district">
+                    <option selected name="district" value="{{ district_info.name }}">{{ district_info.name }}</option>
+                    {% for i in district_name_choices %}
+                        <option name="district" value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-secondary"><a class="text-white" href="{% url 'pitomnik:road_add' %}">Орқага</a></button>
+                <button class="btn btn-primary send_form_btn" type="submit">Сақлаш</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+    <script>
+        $('.send_form_btn').on('click', function(){
+            road_form.submit();
+        });
+    </script>
+{% endblock %}

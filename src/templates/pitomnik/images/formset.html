@@ -1,0 +1,95 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load pitomnik_tags %}
+<style>
+    .inputfile {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+    .dynamic-form{
+        display: flex;
+    }
+    #image-span{
+        width: 250px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+    }
+    #image-span span{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+
+
+</style>
+<div class="imageTable">
+    {{ formset.management_form|crispy }}
+
+    {% for form in formset.forms %}
+        <div class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+            {% for field in form.visible_fields %}
+                <div>
+                    {# Include the hidden fields in the form #}
+                    {% if forloop.first %}
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+                    {% else %}
+                    {% endif %}
+                    {{ field.errors.as_ul }}
+
+                    {% if "DELETE" in field.auto_id %}
+                        {% comment %}removeBtn{% endcomment %}
+                        {{ field | as_crispy_field }}
+                    {% else %}
+                        {{ field }}
+                        <label onclick="fileName(this)" for="{{ field.auto_id }}" class="mr-5">
+                            <div id="image-span" class="btn btn-primary">
+                                <i class="fas fa-cloud-upload-alt text-white mr-1"></i>  <span>{{ field|filename }}</span>
+                            </div>
+                        </label>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+</div>
+<br>
+<script src="{% static 'vendor/js/JQuery.js' %}"></script>
+<script src="{% static 'vendor/js/jquery-plugins/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $('.formset_row-{{ formset.prefix }}').formset({
+        addText: '<span class="btn btn-secondary"><i class="fas fa-plus text-white"></i></span>',
+        deleteText: '<span class="btn btn-danger"><i class="fas fa-times text-white"></i></span>',
+        prefix: '{{ formset.prefix }}',
+    });
+
+    fileName = (element) => {
+        let input = document.getElementById(`${element.htmlFor}`)
+
+        let labelVal = element.innerHTML
+        input.addEventListener("change", function (e) {
+            let filename = ""
+            filename = e.target.value.split("\\").pop()
+
+            if (filename){
+                element.querySelector('div').querySelector("span").innerText = filename
+            }else{
+                element.innerHTML = labelVal
+            }
+        })
+    }
+
+
+
+
+</script>

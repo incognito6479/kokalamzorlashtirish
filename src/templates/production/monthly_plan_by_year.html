@@ -1,0 +1,6 @@
+<option value="">---------</option>
+{% for object in object_list %}
+    <option value="{{ object.id }}">{{ object.road }}-Манзил:
+        {% if  object.road_address %}{{ object.road_address }} {% else %}
+            {{ object.yearly_prod_plan__road_address }}{% endif %}</option>
+{% endfor %}

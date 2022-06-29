@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load pitomnik_tags %}
+{% block content %}
+    <div class="content-wrapper content-wrapper--with-bg">
+        <div class="card">
+            <div class="card-header">
+                <span><p><i class="fas fa-bars"></i> Ўсимлик қўшиш</p></span>
+
+            </div>
+
+            <div class="card-body pt-1">
+                <div class="card-title p-2 m-0 d-flex justify-content-end">
+                    <a href="{% url "pitomnik:plant:add" %}"
+                       class="btn btn-warning"><i
+                            class="fas fa-plus text-white"></i></a>
+                </div>
+                <div id="table" class="table-responsive">
+                    <table class="table plant">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ўсимликлар номи</th>
+                            <th>Ўсимлик тури</th>
+                            <th colspan="2">Aмаллар</th>
+                        </tr>
+                        <tr>
+                            <form>
+                                <td></td>
+                                <td>
+                                    {{ filter.form.name | as_crispy_field }}
+                                </td>
+                                <td>
+                                    {{ filter.form.type | as_crispy_field }}
+                                </td>
+                                <td class="d-inline-block">
+                                    <button type="submit"
+                                            class="btn btn-secondary ">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr>
+                            {% for plant in object_list %}
+                                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                <td>{{ plant.name }}</td>
+                                <td>{{ plant.type |plant_type_label}}</td>
+
+                                <td>
+                                    <a href="{% url "pitomnik:plant:change" plant.id %}"
+                                       class="btn btn-success">
+                                        <i class="fas fa-pencil-alt text-white"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
